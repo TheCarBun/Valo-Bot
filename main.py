@@ -1,11 +1,8 @@
-# Replace
-# ROLE_TO_PING with the Ping role
-
 import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ui import View, Button
-from bot_token import token
+from config import token, ping_role_id
 import valo_info
 import asyncio, random, re
 from datetime import datetime, timedelta
@@ -227,7 +224,7 @@ async def queue(i:discord.Interaction, time:int=10):
 
     embed.add_field(name=f"Player {counter}",value=f"{i.user.mention} is joining", inline=False)
     counter = counter + 1
-    ping_role = i.guild.get_role(ROLE_TO_PING)
+    ping_role = i.guild.get_role(ping_role_id)
     await i.response.send_message(content=f"{ping_role.mention}",embed=embed, view=views, allowed_mentions=discord.AllowedMentions(roles=True))
 
     gifs =[
