@@ -31,39 +31,35 @@ async def on_ready():
 @app_commands.describe(tag="Enter your Valorant Tag")
 async def info(i:discord.Interaction, name:str, tag:str):
     embed = discord.Embed(
-        color=discord.Color.red(),
+        color=discord.Color.from_str("#FD4556"),
         title=f"{name}'s info"
     )
-
+    
     await i.response.defer()
-    
-    account_info = await valo_info.acc_info(name,tag)
-    
+
+    account_info = await valo_info.acc_info(name, tag)
+
     if account_info['status'] == 404:
         embed.description = "## ERROR 404\n***Account not found. Please enter correct details***"
         await i.followup.send(embed=embed)
-        
+
     elif account_info['status'] == 200:
         mmr_info = await valo_info.mmr_info_v1(puuid=account_info['data']['puuid'])
         match_info = await valo_info.mmr_info_v2(puuid=account_info['data']['puuid'])
 
-        embed.add_field(
-            name="Valorant Tag:", 
-            value=f"```{account_info['data']['name']}#{account_info['data']['tag']}```", 
+        embed.add_field(name="Valorant Tag:",
+            value=f"```{account_info['data']['name']}#{account_info['data']['tag']}```",
             inline=False)
+        embed.add_field(name="Level:",
+                        value=f"{account_info['data']['account_level']}",
+                        inline=True)
+        embed.add_field(name="Current Rank:",
+                        value=f"{mmr_info['data']['currenttierpatched']}",
+                        inline=True)
         embed.add_field(
-            name="Level:", 
-            value=f"{account_info['data']['account_level']}", 
+            name="Highest Rank:",
+            value=f"{match_info['data']['highest_rank']['patched_tier']}",
             inline=True)
-        embed.add_field(
-            name="Current Rank:", 
-            value=f"{mmr_info['data']['currenttierpatched']}", 
-            inline=True)
-        embed.add_field(
-        name="Highest Rank:", 
-        value=f"{match_info['data']['highest_rank']['patched_tier']}", 
-        inline=True)
-        
         embed.set_image(url=f"{account_info['data']['card']['wide']}")
 
         #If Unranked and has no image
@@ -72,34 +68,23 @@ async def info(i:discord.Interaction, name:str, tag:str):
         else:
             embed.set_thumbnail(url=f"{account_info['data']['card']['small']}")
 
-        print("Entering for loop")
         by_season = list(match_info['data']['by_season'])
-        print("match_info by season", by_season)
         for x in range(1, 4):
-            print("Enters for loop")
-            if "error" in  match_info['data']['by_season'][by_season[-x]]:
-                print(match_info['data']['by_season'][by_season[-x]])
-                print("Has error in match_info. Field Added")
-                embed.add_field(
-                    name=f"{(str(by_season[-x])).replace('e', 'Episode ').replace('a', ' Act ')}",
+            if "error" in match_info['data']['by_season'][by_season[-x]]:
+                embed.add_field(name=f"{(str(by_season[-x])).replace('e', 'Episode ').replace('a', ' Act ')}",
                     value="No Games Played",
-                    inline=False
-                    )
+                    inline=False)
             else:
-                print("Enters else block")
-                print((str(by_season[-x])).replace('e', 'Episode ').replace('a', ' Act '))
 
                 final_rank = match_info['data']['by_season'][by_season[-x]]['final_rank_patched']
                 total_matches = match_info['data']['by_season'][by_season[-x]]['number_of_games']
                 wins = match_info['data']['by_season'][by_season[-x]]['wins']
-                win_rate = round((wins/total_matches)*100,1)
-                
-                embed.add_field(
-                    name=f"{(str(by_season[-x])).replace('e', 'Episode ').replace('a', ' Act ')}", 
-                    value=f"Rank Achieved: **{final_rank}**\nTotal matches: **{total_matches}**\nWins: **{wins}**\nWin Rate: **{win_rate}%**", 
-                    inline=False
-                    )
-        
+                win_rate = round((wins / total_matches) * 100, 1)
+
+                embed.add_field(name=f"{(str(by_season[-x])).replace('e', 'Episode ').replace('a', ' Act ')}",
+                    value=f"Rank Achieved: **{final_rank}**\nTotal matches: **{total_matches}**\nWins: **{wins}**\nWin Rate: **{win_rate}%**",
+                    inline=False)
+
         await i.followup.send(embed=embed)
 
     
@@ -112,14 +97,16 @@ async def store(i:discord.Interaction):
     await i.response.defer()
 
     if store['status'] == 200:
+        expires_at = datetime.now() + timedelta(seconds=store['data'][0]['seconds_remaining'])
+        timestamp = int(expires_at.timestamp())
         embed = discord.Embed(
             title="Featured Store",
-            description=f"**Bundle Price: {store['data'][0]['bundle_price']}**",
+            description=f"**Bundle Price: `{store['data'][0]['bundle_price']} VP`**\n**Expires At:** <t:{timestamp}:f>",
             color=discord.Color.from_str("#ff0000")
         )
         embed.add_field(
             name=f"{store['data'][0]['items'][0]['name']}", 
-            value=f"Price: {store['data'][0]['items'][0]['base_price']}"
+            value=f"Price: `{store['data'][0]['items'][0]['base_price']} VP`"
             )
         embed.set_image(url=f"{store['data'][0]['items'][0]['image']}")
 
@@ -138,7 +125,7 @@ async def store(i:discord.Interaction):
             embed.clear_fields()
             previous_button.disabled = False
             counter = counter + 1
-            embed.add_field(name=f"{store['data'][0]['items'][counter]['name']}", value=f"Price: {store['data'][0]['items'][counter]['base_price']}")
+            embed.add_field(name=f"{store['data'][0]['items'][counter]['name']}", value=f"Price: `{store['data'][0]['items'][counter]['base_price']} VP`")
             embed.set_image(url=f"{store['data'][0]['items'][counter]['image']}")
 
             await ni.response.defer()
@@ -154,7 +141,7 @@ async def store(i:discord.Interaction):
             embed.clear_fields()
             next_button.disabled = False
             counter = counter - 1
-            embed.add_field(name=f"{store['data'][0]['items'][counter]['name']}", value=f"Price: {store['data'][0]['items'][counter]['base_price']}")
+            embed.add_field(name=f"{store['data'][0]['items'][counter]['name']}", value=f"Price: `{store['data'][0]['items'][counter]['base_price']} VP`")
             embed.set_image(url=f"{store['data'][0]['items'][counter]['image']}")
 
             await pi.response.defer()
@@ -193,13 +180,13 @@ async def queue(i:discord.Interaction, time:int=10):
     embed = discord.Embed(
         title="Wanna Play Valo??",
         description=f"**Time left to join <t:{timestamp}:R>\n**{i.user.mention} is calling everyone to play\n**Click on the Button below to join**",
-        color=discord.Color.red()
+        color=discord.Color.from_str("#FD4556")
     )
     embed.set_thumbnail(url=i.user.avatar.url)
 
     embed2 = discord.Embed(
         title="Let's Play Valo!",
-        color=discord.Color.red()
+        color=discord.Color.from_str("#FD4556")
     )
     users = f"{i.user.mention}"
 
