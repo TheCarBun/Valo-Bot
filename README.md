@@ -56,12 +56,16 @@ The bot has the following slash commands for now:
 <summary> <b>See Images</b> </summary> 
 <br>
 <b>For Info:</b>
-<br><br>
-<img height="500" src="https://imgur.com/WNy83ZJ.png" alt="/info"/>
 <br>
-<b>For Featured Store: </b>
+<img height="500" src="https://imgur.com/WNy83ZJ.png" alt="/info"/>
+<br><br>
+<b>For Featured Store:</b>
 <br>
 <img width="500" src="https://imgur.com/3x178ad.png" alt="/store"/>
+<br><br>
+<b>For Queue Ping:</b>
+<br>
+<img width="500" src="https://imgur.com/KXj10dp.png" alt="/queue"/>
 
 <hr>
 </details>
