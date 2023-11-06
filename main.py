@@ -47,13 +47,30 @@ async def info(i:discord.Interaction, name:str, tag:str):
         mmr_info = await valo_info.mmr_info_v1(puuid=account_info['data']['puuid'])
         match_info = await valo_info.mmr_info_v2(puuid=account_info['data']['puuid'])
 
-        embed.add_field(name="Valorant Tag:", value=f"```{mmr_info['data']['name']}#{mmr_info['data']['tag']}```", inline=False)
-        embed.add_field(name="Level:", value=f"{account_info['data']['account_level']}", inline=True)
-        embed.add_field(name="Current Rank:", value=f"{mmr_info['data']['currenttierpatched']}", inline=True)
-        embed.add_field(name="Highest Rank:", value=f"{match_info['data']['highest_rank']['patched_tier']}", inline=True)
-
-        embed.set_thumbnail(url=f"{mmr_info['data']['images']['large']}")
+        embed.add_field(
+            name="Valorant Tag:", 
+            value=f"```{account_info['data']['name']}#{account_info['data']['tag']}```", 
+            inline=False)
+        embed.add_field(
+            name="Level:", 
+            value=f"{account_info['data']['account_level']}", 
+            inline=True)
+        embed.add_field(
+            name="Current Rank:", 
+            value=f"{mmr_info['data']['currenttierpatched']}", 
+            inline=True)
+        embed.add_field(
+        name="Highest Rank:", 
+        value=f"{match_info['data']['highest_rank']['patched_tier']}", 
+        inline=True)
+        
         embed.set_image(url=f"{account_info['data']['card']['wide']}")
+
+        #If Unranked and has no image
+        if mmr_info['data']['images'] != None:
+            embed.set_thumbnail(url=f"{mmr_info['data']['images']['large']}")
+        else:
+            embed.set_thumbnail(url=f"{account_info['data']['card']['small']}")
 
         print("Entering for loop")
         by_season = list(match_info['data']['by_season'])
