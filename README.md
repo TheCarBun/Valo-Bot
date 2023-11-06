@@ -71,9 +71,10 @@ The bot has the following slash commands for now:
 <br>
 <b>For Featured Store:</b>
 <br>
-<img src="https://imgur.com/me0nXoi.gif" alt="/store gif"/>
+<img src="https://github.com/TheCarBun/valo-bot/assets/126663378/bc17619f-bf83-46f8-bcd2-b1492e38ff04" alt="/store gif"/>
 </details>
 <br>
+
 
 
 ## Disclaimer
