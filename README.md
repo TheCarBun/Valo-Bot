@@ -17,6 +17,8 @@
   •
   <a href="#disclaimer">Disclaimer</a>
   •
+  <a href="#license">License</a>
+  •
   <a href="#contributions">Contributions</a>
   •
   <a href="#acknowledgments">Acknowledgments</a>
@@ -89,6 +91,10 @@ Please read the [disclaimer](DISCLAIMER.md) before using the code to host your b
 Valorant-DiscordBot is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. 
 Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
 ```
+
+## License
+
+This project is licensed under the MIT License. Check the [LICENSE](LICENSE) file for more details.
 
 ## Contributions
 ### How to Contribute
