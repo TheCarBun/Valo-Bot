@@ -17,6 +17,8 @@
   •
   <a href="#disclaimer">Disclaimer</a>
   •
+  <a href="#installation-guide">Installation Guide</a>
+  •
   <a href="#license">License</a>
   •
   <a href="#contributions">Contributions</a>
@@ -99,7 +101,7 @@ Go to [config.py](config.py) and replace TOKEN with your bot's token. If you're 
 
 > [!Note]
 >
-> For detailed Installation guide check [Installation_Guide.md](Installation_Guide.md).
+> For detailed Installation guide check [Installation_Guide.md]([Installation_Guide.md](https://github.com/TheCarBun/valo-bot/blob/main/Installation_Guide.md)).
 
 ## License
 
