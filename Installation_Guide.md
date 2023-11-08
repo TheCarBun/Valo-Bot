@@ -44,17 +44,17 @@ Invite your bot to your discord server:
 
 * Go to OAuth2 section then Url Generator
 * Under Scopes enable:
-  * `x` `bot`
-  * `x` `application.commands`
+  * [x] `bot`
+  * [x] `application.commands`
 * Under Bot Permission enable:
-  * `x` `Manage Webhooks`
-  * `x` `Read Messages/View Channels`
-  * `x` `Send Messages`
-  * `x` `Embed Links`
-  * `x` `Attach Files`
-  * `x` `Read Message History`
-  * `x` `Mention Everyone`
-  * `x` `Use Slash Commands`
+  * [x] `Manage Webhooks`
+  * [x] `Read Messages/View Channels`
+  * [x] `Send Messages`
+  * [x] `Embed Links`
+  * [x] `Attach Files`
+  * [x] `Read Message History`
+  * [x] `Mention Everyone`
+  * [x] `Use Slash Commands`
 
 * Invite your bot to the server with the generated URL
 
