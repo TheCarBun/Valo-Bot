@@ -55,7 +55,7 @@ The bot has the following slash commands for now:
 
 ## Screenshots
 <details>
-<summary> <b>See Images</b> </summary> 
+<summary> <b>Click to view Images</b> </summary> 
 <br>
 <b>For Info:</b>
 <br>
@@ -73,7 +73,7 @@ The bot has the following slash commands for now:
 </details>
 
 <details>
-<summary> <b>See GIFs</b> </summary>
+<summary> <b>Click to view GIFs</b> </summary>
 <br>
 <b>For Featured Store:</b>
 <br>
@@ -87,10 +87,19 @@ The bot has the following slash commands for now:
 
 Please read the [disclaimer](DISCLAIMER.md) before using the code to host your bot.
 
-```
-Valorant-DiscordBot is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. 
+> [!Important]
+>
+> Valo Bot is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. 
 Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
-```
+
+
+## Installation Guide
+
+Go to [config.py](config.py) and replace TOKEN with your bot's token. If you're gonna use `/queue` command, you need to replace `ROLE_ID` with the Role ID of your Ping role.
+
+> [!Note]
+>
+> For detailed Installation guide check [Installation_Guide.md](Installation_Guide.md).
 
 ## License
 
@@ -99,6 +108,7 @@ This project is licensed under the MIT License. Check the [LICENSE](LICENSE) fil
 ## Contributions
 ### How to Contribute
 1. Fork the repository.
+2. Star the repository.
 2. Create a new branch for your contribution.
 3. Make your changes and commit them.
 4. Push your changes to your fork.
