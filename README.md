@@ -99,9 +99,7 @@ Riot Games and all associated properties are trademarks or registered trademarks
 
 Go to [config.py](config.py) and replace TOKEN with your bot's token. If you're gonna use `/queue` command, you need to replace `ROLE_ID` with the Role ID of your Ping role.
 
-> [!Note]
->
-> For detailed Installation guide check [Installation_Guide.md]([Installation_Guide.md](https://github.com/TheCarBun/valo-bot/blob/main/Installation_Guide.md)).
+For detailed Installation guide check [Installation_Guide.md]([Installation_Guide.md](https://github.com/TheCarBun/valo-bot/blob/main/Installation_Guide.md)).
 
 ## License
 

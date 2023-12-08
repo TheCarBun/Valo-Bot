@@ -35,3 +35,17 @@ async def featured_store():
         response = await session.get(f'https://api.henrikdev.xyz/valorant/v2/store-featured', headers = headers)
         store_info = await response.json()
     return store_info
+
+async def news():
+    async with aiohttp.ClientSession() as session:
+        headers = {
+            'accept': 'application/json'
+        }
+        response = await session.get(f'https://api.henrikdev.xyz/valorant/v1/website/en-us', headers = headers)
+        news = await response.json()
+    return news
+
+async def fetch_crosshair(id:str):
+    async with aiohttp.ClientSession() as session:
+        response = await session.get(f'https://api.henrikdev.xyz/valorant/v1/crosshair/generate?id={id}', headers={'accept': 'image/png'})
+    return response.url

@@ -75,7 +75,7 @@ pip discord.py
 
 ```
 token = "TOKEN"
-ping_role_id = "ROLE ID"
+ping_role_id = ROLE ID
 ```
 
 * Replace `TOKEN` with your bot token in [config.py](config.py) file.

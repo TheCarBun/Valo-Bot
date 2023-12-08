@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ui import View, Button
-from config import token, ping_role_id
+from config import *
 import valo_info
 import asyncio, random, re
 from datetime import datetime, timedelta
@@ -102,7 +102,7 @@ async def store(i:discord.Interaction):
         embed = discord.Embed(
             title="Featured Store",
             description=f"**Bundle Price: `{store['data'][0]['bundle_price']} VP`**\n**Expires At:** <t:{timestamp}:f>",
-            color=discord.Color.from_str("#ff0000")
+            color=discord.Color.from_str("#FD4556")
         )
         embed.add_field(
             name=f"{store['data'][0]['items'][0]['name']}", 
@@ -167,6 +167,7 @@ async def store(i:discord.Interaction):
         await i.edit_original_response("`Status code!=200`\nError... Try again later or change input")
 
 
+# WIP Need to make this better
 
 @bot.tree.command(name="queue", description="Start a timer that pings everyone and asks them to join")
 @app_commands.describe(time="Enter time in minutes")
@@ -191,6 +192,7 @@ async def queue(i:discord.Interaction, time:int=10):
     users = f"{i.user.mention}"
 
     join_button = Button(label="Join", style=discord.ButtonStyle.blurple)
+    unjoin_button = Button(label="Unjoin", style=discord.ButtonStyle.gray)
     cancel_button = Button(label="Cancel", style=discord.ButtonStyle.red)
 
     async def join_callback(jint:discord.Interaction):
@@ -207,6 +209,20 @@ async def queue(i:discord.Interaction, time:int=10):
         else:
             await jint.response.send_message(content="You have already joined", ephemeral=True)
 
+    async def unjoin_callback(ujint:discord.Interaction):
+        await ujint.response.defer()
+        global user_list, users, counter
+
+        if ujint.user.id in user_list:
+            user_list.remove(ujint.user.id)
+            users = users.replace(f"{ujint.user.mention}", "")
+            embed.add_field(name="Player Unjoined", value=f"{ujint.user.mention}", inline=False)
+            counter = counter - 1
+            await i.edit_original_response(embed=embed, view=views)
+        else:
+            await ujint.followup.send(content="You have not joined yet", ephemeral=True)
+            
+
     async def cancel_callback(cint:discord.Interaction):
         global check, counter
         await cint.response.defer()
@@ -220,32 +236,124 @@ async def queue(i:discord.Interaction, time:int=10):
             await cint.followup.send(content="Only Command User can Cancel", ephemeral=True)
     
     join_button.callback = join_callback
+    unjoin_button.callback = unjoin_callback
     cancel_button.callback = cancel_callback
 
     views = View()
     views.add_item(join_button)
+    views.add_item(unjoin_button)
     views.add_item(cancel_button)
 
     embed.add_field(name=f"Player {counter}",value=f"{i.user.mention} is joining", inline=False)
     counter = counter + 1
     ping_role = i.guild.get_role(ping_role_id)
     await i.response.send_message(content=f"{ping_role.mention}",embed=embed, view=views, allowed_mentions=discord.AllowedMentions(roles=True))
-
-    gifs =[
-        "https://media.giphy.com/media/jRtZJvoWxWVJ7uF1cx/giphy.gif",
-        "https://media.giphy.com/media/woX7AfeiJ4pwSWJ8xY/giphy.gif",
-        "https://media.giphy.com/media/IvOFcGZeDA76P6XryO/giphy.gif",
-        "https://media.giphy.com/media/jRtZJvoWxWVJ7uF1cx/giphy.gif",
-        "https://media.giphy.com/media/sUOkBnwf8157cVGE57/giphy.gif"
-        ]
     
     await asyncio.sleep(time*60)
-    print(check)
     if check == False:
         counter = 1
         embed2.set_image(url=random.choice(gifs))
         await i.edit_original_response(embed=embed, view=None)
         await i.followup.send(content=f"{users}",embed=embed2)
+
+# WIP Need to think of how to use this peroperly
+
+@bot.tree.command(name="news", description="Shows recent Valorant related updates")
+async def news(i:discord.Interaction):
+    await i.response.defer()
+    global counter
+    counter = 1
+    news = await valo_info.news()
+
+
+    if news['status'] == 200:
+        date = datetime.fromisoformat(news['data'][0]['date'])
+        timestamp = int(date.timestamp())
+        title = str(news['data'][0]['category']).capitalize()
+
+        data = news['data'][0]
+
+        embed = discord.Embed(
+            title= title,
+            url= news['data'][0]['external_link'],
+            description=f"[{data['title']}]({data['url']})\n\nPosted <t:{timestamp}:R>",
+            color=discord.Color.from_str("#FD4556")
+        )
+        embed.set_image(url=f"{data['banner_url']}")
+
+        
+
+        
+        previous_button = Button(label="Previous", style=discord.ButtonStyle.red)
+        next_button = Button(label="Next", style=discord.ButtonStyle.red)
+
+        async def next_callback(ni:discord.Interaction):
+            global counter
+            previous_button.disabled = False
+            counter = counter + 1
+
+            date = datetime.fromisoformat(news['data'][counter]['date'])
+            timestamp = int(date.timestamp())
+
+            embed.clear_fields()
+            embed.url = news['data'][counter]['external_link']
+            embed.description = f"[{news['data'][counter]['title']}]({news['data'][counter]['url']})\n\nPosted <t:{timestamp}:R>\n\n"
+            embed.set_image(url=f"{news['data'][counter]['banner_url']}")
+
+            await ni.response.defer()
+
+            if counter == (len(news['data'])-1):
+                next_button.disabled=True
+                await i.edit_original_response(embed=embed, view= views)
+            else:
+                await i.edit_original_response(embed=embed, view= views)
+
+        async def previous_callback(pi:discord.Interaction):
+            global counter
+            next_button.disabled = False
+            counter = counter - 1
+
+            embed.clear_fields()
+            date = datetime.fromisoformat(news['data'][counter]['date'])
+            timestamp = int(date.timestamp())
+            embed.url = news['data'][counter]['external_link']
+            embed.description = f"[{news['data'][counter]['title']}]({news['data'][counter]['url']})\n\nPosted <t:{timestamp}:R>\n\n"
+            embed.set_image(url=f"{news['data'][counter]['banner_url']}")
+
+            await pi.response.defer()
+
+            if counter ==0:
+                previous_button.disabled=True
+                await i.edit_original_response(embed=embed, view=views)
+            else:
+                await i.edit_original_response(embed=embed, view= views)
+        previous_button.callback = previous_callback
+        next_button.callback = next_callback
+
+        views = View()
+        views.add_item(previous_button)
+        views.add_item(next_button)
+        previous_button.disabled = True
+
+        await i.edit_original_response(embed=embed, view=views)
+
+    else:
+        await i.edit_original_response("`Status code!=200`\nError... Try again later or change input")
+
+@bot.tree.command(name="crosshair", description="Get image of crosshair from ID")
+async def crosshair(i:discord.Interaction, id:str):
+    await i.response.defer()
+    embed = discord.Embed(
+        title="Crosshair Details",
+        description=f"Crosshair ID: \n```{id}```",
+        color=discord.Color.from_str("#FD4556")
+    )
+    embed.set_thumbnail(url=i.user.avatar.url)
+
+    crosshair = await valo_info.fetch_crosshair(id=id)
+
+    embed.set_image(url=crosshair)
+    await i.edit_original_response(embed=embed)
 
 #-----------------
 bot.run(token)
