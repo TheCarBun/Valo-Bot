@@ -194,6 +194,7 @@ async def queue(i:discord.Interaction, time:int=10):
     join_button = Button(label="Join", style=discord.ButtonStyle.blurple)
     unjoin_button = Button(label="Unjoin", style=discord.ButtonStyle.gray)
     cancel_button = Button(label="Cancel", style=discord.ButtonStyle.red)
+    end_button = Button(label="End Queue", style=discord.ButtonStyle.red)
 
     async def join_callback(jint:discord.Interaction):
         global user_list, users, counter
@@ -227,22 +228,34 @@ async def queue(i:discord.Interaction, time:int=10):
         global check, counter
         await cint.response.defer()
         if cint.user == i.user:
-            check = True
-            counter = 1
+            check = True #checks if queue was cancelled
+            counter = 1 #resets counter to 1
             embed.description = "Queue Cancelled"
             embed.clear_fields()
             await i.edit_original_response(content="", embed=embed, view=None)
         else:
             await cint.followup.send(content="Only Command User can Cancel", ephemeral=True)
     
+    async def end_callback(eint:discord.Interaction):
+        global check, counter
+        if eint.user == i.user:
+            check = True
+            counter = 1
+            embed2.set_image(url=random.choice(gifs))
+            await i.edit_original_response(embed=embed, view=None)
+            await i.followup.send(content=f"{users}",embed=embed2)
+
+    
     join_button.callback = join_callback
     unjoin_button.callback = unjoin_callback
     cancel_button.callback = cancel_callback
+    end_button.callback = end_callback
 
-    views = View()
+    views = View(timeout=time*60)
     views.add_item(join_button)
     views.add_item(unjoin_button)
     views.add_item(cancel_button)
+    views.add_item(end_button)
 
     embed.add_field(name=f"Player {counter}",value=f"{i.user.mention} is joining", inline=False)
     counter = counter + 1
